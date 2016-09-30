@@ -89,7 +89,6 @@ public class TrackItemFragment extends Fragment {
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                 return false;
             }
-
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
@@ -97,7 +96,6 @@ public class TrackItemFragment extends Fragment {
                     mItemAdapter.removeItem(position);
                 }
             }
-
             @Override
             public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
 
@@ -249,24 +247,28 @@ public class TrackItemFragment extends Fragment {
             try {
                 JSONArray productArray = new JSONArray(jsonResponse);
                 for (int i = 0; i < productArray.length(); i++) {
-
+                    ItemData data = new ItemData();
                     JSONObject jsonItem = productArray.getJSONObject(i);
                     String orderId = jsonItem.getString(ORDER_ID);
                     String itemImageUri = jsonItem.getString(PRODUCT_IMAGE_URI);
                     String itemName = jsonItem.getString(PRODUCT_NAME);
+
                     String itemDeliveryStatus = jsonItem.getString(PRODUCT_DELIVERY_STATUS);
-                    String retailerId = jsonItem.getString(RETAILER_ID);
-                    String productId = jsonItem.getString(PRODUCT_ID);
-                    ItemData data = new ItemData();
+                    if (itemDeliveryStatus == null) {
+                        data.setDeliveryStatus("null");
+                    } else {
+                        String retailerId = jsonItem.getString(RETAILER_ID);
+                        String productId = jsonItem.getString(PRODUCT_ID);
+                        // ItemData data = new ItemData();
+                        data.setOrderId(orderId);
+                        data.setItemImageUri(itemImageUri);
+                        data.setItemName(itemName);
+                        data.setRetailer(retailerId);
+                        data.setDeliveryStatus(itemDeliveryStatus);
+                        data.setProductId(productId);
 
-                    data.setOrderId(orderId);
-                    data.setItemImageUri(itemImageUri);
-                    data.setItemName(itemName);
-                    data.setRetailer(retailerId);
-                    data.setDeliveryStatus(itemDeliveryStatus);
-                    data.setProductId(productId);
-
-                    result.add(data);
+                        result.add(data);
+                    }
                 }
 
             } catch (JSONException e) {
