@@ -3,6 +3,12 @@ package com.example.zendynamix.tracckAndroidUI;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -13,6 +19,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,6 +55,7 @@ public class TrackItemFragment extends Fragment {
     private List<ItemData> itemDatalst = new ArrayList<>();
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private SQLiteDatabase msqLiteDatabase;
+    private Paint p = new Paint();
 
     public static TrackItemFragment newInstance() {
         return new TrackItemFragment();
@@ -71,17 +79,60 @@ public class TrackItemFragment extends Fragment {
         dividerDrawable = ContextCompat.getDrawable(getActivity(), R.drawable.divider);
         RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecoration(dividerDrawable);
         mRecyclerView.addItemDecoration(dividerItemDecoration);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.activity_main_swipe_refresh_layout);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                updateUI();
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
-        });
         updateUI();
         return view;
     }
+
+    private void initSwape() {
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                if (direction == ItemTouchHelper.LEFT) {
+                    mItemAdapter.removeItem(position);
+                }
+            }
+
+            @Override
+            public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+
+                Bitmap icon;
+                TextView archive;
+                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+
+                    View itemView = viewHolder.itemView;
+                    float height = (float) itemView.getBottom() - (float) itemView.getTop();
+                    float width = height / 3;
+
+                    if (dX > 0) {
+                        p.setColor(Color.parseColor("#388E3C"));
+                        RectF background = new RectF((float) itemView.getLeft(), (float) itemView.getTop(), dX, (float) itemView.getBottom());
+                        c.drawRect(background, p);
+                        icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_add);
+                        RectF icon_dest = new RectF((float) itemView.getLeft() + width, (float) itemView.getTop() + width, (float) itemView.getLeft() + 2 * width, (float) itemView.getBottom() - width);
+                        c.drawBitmap(icon, null, icon_dest, p);
+                    } else {
+                        p.setColor(Color.parseColor("#D32F2F"));
+                        RectF background = new RectF((float) itemView.getRight() + dX, (float) itemView.getTop(), (float) itemView.getRight(), (float) itemView.getBottom());
+                        c.drawRect(background, p);
+                        icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_delete);
+                        RectF icon_dest = new RectF((float) itemView.getRight() - 2 * width, (float) itemView.getTop() + width, (float) itemView.getRight() - width, (float) itemView.getBottom() - width);
+                        c.drawBitmap(icon, null, icon_dest, p);
+                    }
+                }
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            }
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(mRecyclerView);
+    }
+
 
     private void updateUI() {
         mItemAdapter = new ItemAdapter(mContext, itemDatalst);
@@ -121,6 +172,7 @@ public class TrackItemFragment extends Fragment {
         public void setmItemData(List<ItemData> result) {
             itemDataLst.clear();
             itemDataLst.addAll(result);
+            initSwape();
             notifyDataSetChanged();
         }
 
@@ -158,16 +210,23 @@ public class TrackItemFragment extends Fragment {
                 holder.itemStatusButton.setBackground(getResources().getDrawable(R.drawable.button_notdelivered));
             }
         }
+
         @Override
         public int getItemCount() {
             return itemDataLst.size();
         }
-    }
-         void dbCreate(){
-             mContext=getActivity().getApplicationContext();
-             msqLiteDatabase=new ItemBaseHelper(mContext).getWritableDatabase();
 
-         }
+        public void removeItem(int position) {
+            itemDataLst.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
+
+    void dbCreate() {
+        mContext = getActivity().getApplicationContext();
+        msqLiteDatabase = new ItemBaseHelper(mContext).getWritableDatabase();
+
+    }
 
     protected class FetchProductData extends AsyncTask<String, Void, List<ItemData>> {
 
