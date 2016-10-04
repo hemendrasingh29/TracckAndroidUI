@@ -37,14 +37,14 @@ import java.util.List;
  */
 public class ProductDetailFragment extends Fragment {
     private static final String LOG_TAG = ProductDetailFragment.class.getSimpleName();
-    private static final String DIALOG="DIALOG";
+    private static final String DIALOG = "DIALOG";
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int CAMERA_RESULT_OK = 0;
     private static final String INDEX = "index";
     private ItemData itemData;
     private List<ItemData> itemDatList = new ArrayList<>();
     private ImageView dImageViewDetail;
-    private TextView dRetailerName,dDeliveryStatus;
+    private TextView dRetailerName, dDeliveryStatus;
     private TextView dItemTitle;
     private ImageView cameraButton;
     private Bitmap bitmap;
@@ -56,10 +56,11 @@ public class ProductDetailFragment extends Fragment {
     private Button moreInfo;
     private List<ItemData> detailList = new ArrayList<>();
     private String orderId;
-    private String payMethod,totalAmount,orderDate;
+    private String payMethod, totalAmount, orderDate;
     private FrameLayout frameLayout;
-    List<String> keyFeature, techSpecKey, techSpecValue,imageUrlL;
+    List<String> keyFeature, techSpecKey, techSpecValue, imageUrlL;
     private Fragment fragment;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,21 +86,21 @@ public class ProductDetailFragment extends Fragment {
         dImageViewDetail = (ImageView) view.findViewById(R.id.image_view_detail);
         final String imgUri = itemData.getItemImageUri();
         Picasso.with(getContext()).load("http://api.tracck.com:4000/productimg/" + imgUri).into(dImageViewDetail);
-         dImageViewDetail.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View view) {
-                 for (int i = 0; i < detailList.size(); i++) {
-                     itemData = detailList.get(i);
-                 }
-                 imageUrlL=itemData.getImageUrls();
-                 Intent intent= ImagePagerActivity.newIntent(getActivity(),imageUrlL);
-                 startActivity(intent);
-             }
-         });
+        dImageViewDetail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                for (int i = 0; i < detailList.size(); i++) {
+                    itemData = detailList.get(i);
+                }
+                imageUrlL = itemData.getImageUrls();
+                Intent intent = ImagePagerActivity.newIntent(getActivity(), imageUrlL);
+                startActivity(intent);
+            }
+        });
         dItemTitle = (TextView) view.findViewById(R.id.detail_item_title);
         dRetailerName = (TextView) view.findViewById(R.id.detail_retailer_name);
         dDeliveryStatus = (TextView) view.findViewById(R.id.detail_delivery_status);
-       // dItemTitle.setText(itemData.getItemName());
+        // dItemTitle.setText(itemData.getItemName());
         dRetailerName.setText(getString(R.string.retailer));
         String dStatus = itemData.getDeliveryStatus();
         if (dStatus.charAt(0) == 'D' || dStatus.charAt(0) == 'd') {
@@ -117,7 +118,8 @@ public class ProductDetailFragment extends Fragment {
                 if (s.equals("More Detail")) {
                     startProdDetailFrag();
                     moreInfo.setText(getResources().getString(R.string.less_detail));
-                } if (s.equals("Less Detail")) {
+                }
+                if (s.equals("Less Detail")) {
 
                     moreInfo.setText(getResources().getString(R.string.more_detail));
 
@@ -151,10 +153,11 @@ public class ProductDetailFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.detail_menu, menu);
-       MenuItem menuItem=menu.findItem(R.id.show_title);
+        MenuItem menuItem = menu.findItem(R.id.show_title);
         menuItem.setTitle(itemData.getItemName());
 
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -178,7 +181,7 @@ public class ProductDetailFragment extends Fragment {
 
             Log.e(LOG_TAG, "JSON DATA>>>>" + jsonResponse);
             final String PRODUCT_NAME = "name";
-            final String IMAGE_URLS="imageUrls";
+            final String IMAGE_URLS = "imageUrls";
             final String KEY_FEATURE = "keyFeatures";
             final String TECH_SPECIFICATION = "techSpecification";
             final String KEY = "key";
@@ -194,9 +197,9 @@ public class ProductDetailFragment extends Fragment {
                 JSONObject jsonObject = new JSONObject(jsonResponse);
                 String prodName = jsonObject.getString(PRODUCT_NAME);
                 data.setProductName(prodName);
-                JSONArray imgUrls=jsonObject.optJSONArray(IMAGE_URLS);
-                for(int i=0;i<imgUrls.length();i++){
-                    String imageUrl=imgUrls.getString(i);
+                JSONArray imgUrls = jsonObject.optJSONArray(IMAGE_URLS);
+                for (int i = 0; i < imgUrls.length(); i++) {
+                    String imageUrl = imgUrls.getString(i);
                     imgUrlsList.add(imageUrl);
                     data.addImageUrls(imgUrlsList);
                     result.add(data);
@@ -229,7 +232,7 @@ public class ProductDetailFragment extends Fragment {
         protected List<ItemData> doInBackground(String... param) {
 
             try {
-                final String FORECAST_BASE_URL = "http://api.tracck.com:4000/productDetail/amazonIndia/"+ pid;
+                final String FORECAST_BASE_URL = "http://api.tracck.com:4000/productDetail/amazonIndia/" + pid;
                 Uri builtUri = Uri.parse(FORECAST_BASE_URL);
                 return getProductDataFromJson(ConnectionHelper.fetch(builtUri.toString()));
             } catch (JSONException e) {
@@ -237,11 +240,12 @@ public class ProductDetailFragment extends Fragment {
             }
             return null;
         }
+
         @Override
         protected void onPostExecute(List<ItemData> result) {
             if (result != null) {
                 if (result.isEmpty()) {
-                 //   Toast.makeText(getActivity(), "NO INTERNET", Toast.LENGTH_LONG).show();
+                    //   Toast.makeText(getActivity(), "NO INTERNET", Toast.LENGTH_LONG).show();
                 }
                 detailList.addAll(result);
                 FetchPurchaseDetail fetchPurchaseDetail = new FetchPurchaseDetail(orderId);
@@ -262,15 +266,15 @@ public class ProductDetailFragment extends Fragment {
 
             Log.e(LOG_TAG, "purchase detail json>>>>" + jasonResponse);
             final String ORDERS = "orders";
-            final String ACTIVITIES="activities";
-            final String SHIPMENTS="shipments";
+            final String ACTIVITIES = "activities";
+            final String SHIPMENTS = "shipments";
             final String PAYMENT_METHOD = "paymentMethod";
             final String ORDER_TOTAL_AMT = "orderTotalAmount";
             final String ORDER_DATE = "orderDate";
-            final String LOCATION="location";
-            final String EVENT_TIME="eventTime";
-            final String ACTIVITY="activity";
-            final String _ID="_id";
+            final String LOCATION = "location";
+            final String EVENT_TIME = "eventTime";
+            final String ACTIVITY = "activity";
+            final String _ID = "_id";
 
             List<ItemData> result = new ArrayList<>();
             try {
@@ -292,16 +296,16 @@ public class ProductDetailFragment extends Fragment {
                         itemData.setTotalAmount(totalAmount);
                         result.add(itemData);
 
-                        JSONArray shipmentArray= orderDetail.getJSONArray(SHIPMENTS);
-                        for(int k=0;k<shipmentArray.length();k++){
-                            JSONObject shipmentObject=shipmentArray.getJSONObject(k);
-                            JSONArray activities=shipmentObject.getJSONArray(ACTIVITIES);
-                            for(int l=0;l<activities.length();l++){
-                                JSONObject activitObj= activities.getJSONObject(l);
-                                String name= activitObj.getString(LOCATION);
-                                String evntTime= activitObj.getString(EVENT_TIME);
-                                String activity= activitObj.getString(ACTIVITY);
-                                String iD=activitObj.getString(_ID);
+                        JSONArray shipmentArray = orderDetail.getJSONArray(SHIPMENTS);
+                        for (int k = 0; k < shipmentArray.length(); k++) {
+                            JSONObject shipmentObject = shipmentArray.getJSONObject(k);
+                            JSONArray activities = shipmentObject.getJSONArray(ACTIVITIES);
+                            for (int l = 0; l < activities.length(); l++) {
+                                JSONObject activitObj = activities.getJSONObject(l);
+                                String name = activitObj.getString(LOCATION);
+                                String evntTime = activitObj.getString(EVENT_TIME);
+                                String activity = activitObj.getString(ACTIVITY);
+                                String iD = activitObj.getString(_ID);
                                 Log.e(LOG_TAG, "purchase detail**************************** json>>>>" + name);
                                 Log.e(LOG_TAG, "purchase detail**************************** json>>>>" + evntTime);
                                 Log.e(LOG_TAG, "purchase detail**************************** json>>>>" + activity);
