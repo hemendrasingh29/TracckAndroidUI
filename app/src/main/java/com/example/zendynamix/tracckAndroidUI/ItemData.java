@@ -17,10 +17,11 @@ public class ItemData implements Serializable {
     private String retailer;
     private String productId;
     private String productName;
-    private String orderId;
+    private  String orderID;
     private String paymentMethod;
     private String totalAmount;
     private String orderDate;
+    private String archive;
 
 
     private List<String> keyLFeature = new ArrayList<>();
@@ -101,14 +102,6 @@ public class ItemData implements Serializable {
         this.keyLFeature = keyLFeature;
     }
 
-    public String getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
-    }
-
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
@@ -137,6 +130,22 @@ public class ItemData implements Serializable {
 
     public String getPaymentMethod() {
         return paymentMethod;
+    }
+
+    public String getArchive() {
+        return archive;
+    }
+
+    public void setArchive(String archive) {
+        this.archive = archive;
+    }
+
+    public String getOrderID() {
+        return orderID;
+    }
+
+    public void setOrderID(String orderID) {
+        this.orderID = orderID;
     }
 }
 

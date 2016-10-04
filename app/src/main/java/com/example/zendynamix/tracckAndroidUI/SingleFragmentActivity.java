@@ -3,8 +3,6 @@ package com.example.zendynamix.tracckAndroidUI;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -29,7 +27,7 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
     private List<DrawerData> drawerDatas=new ArrayList<>();
 
 
-    protected abstract Fragment createFragment();
+  //  protected abstract Fragment createFragment();
 
     @LayoutRes
     protected int getLayoutResId() {
@@ -44,12 +42,12 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
        // setTitle(Html.fromHtml("<font color='#ff0000'>hello </font>"));
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentById(R.id.fragment_container);
-        if (fragment == null) {
-            fragment = createFragment();
-            fragmentManager.beginTransaction().add(R.id.fragment_container, fragment).commit();
-        }
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+//        Fragment fragment = fragmentManager.findFragmentById(R.id.fragment_container);
+//        if (fragment == null) {
+//            fragment = createFragment();
+//            fragmentManager.beginTransaction().add(R.id.fragment_container, fragment).commit();
+//        }
 
         mDrawerList = (ListView) findViewById(R.id.navList);
         drawerAdapter= new DrawerAdapter(this,drawerDatas);

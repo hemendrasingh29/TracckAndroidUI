@@ -71,7 +71,7 @@ public class ProductDetailFragment extends Fragment {
             itemDatList = (List<ItemData>) bundle.getSerializable("list");
             itemData = itemDatList.get(position);
             productId = itemData.getProductId();
-            orderId = itemData.getOrderId();
+            orderId = itemData.getOrderID();
             FetchProductDetailMoreData fetchProductDetailMoreData = new FetchProductDetailMoreData(productId);
             fetchProductDetailMoreData.execute();
         }
@@ -222,7 +222,6 @@ public class ProductDetailFragment extends Fragment {
             } catch (JSONException e) {
                 Log.e(LOG_TAG, "Error ", e);
             }
-            Log.e(LOG_TAG, "Result" + result);
             return result;
         }
 
@@ -263,9 +262,16 @@ public class ProductDetailFragment extends Fragment {
 
             Log.e(LOG_TAG, "purchase detail json>>>>" + jasonResponse);
             final String ORDERS = "orders";
+            final String ACTIVITIES="activities";
+            final String SHIPMENTS="shipments";
             final String PAYMENT_METHOD = "paymentMethod";
             final String ORDER_TOTAL_AMT = "orderTotalAmount";
             final String ORDER_DATE = "orderDate";
+            final String LOCATION="location";
+            final String EVENT_TIME="eventTime";
+            final String ACTIVITY="activity";
+            final String _ID="_id";
+
             List<ItemData> result = new ArrayList<>();
             try {
                 JSONArray jsonArray = new JSONArray(jasonResponse);
@@ -274,15 +280,34 @@ public class ProductDetailFragment extends Fragment {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
 
                     JSONArray orderArray = jsonObject.getJSONArray(ORDERS);
+
                     for (int j = 0; j < orderArray.length(); j++) {
                         JSONObject orderDetail = orderArray.getJSONObject(j);
                         String paymentMethod = orderDetail.getString(PAYMENT_METHOD);
                         String totalAmount = orderDetail.getString(ORDER_TOTAL_AMT);
                         String orderDate = orderDetail.getString(ORDER_DATE);
+
                         itemData.setPaymentMethod(paymentMethod);
                         itemData.setOrderDate(orderDate);
                         itemData.setTotalAmount(totalAmount);
                         result.add(itemData);
+
+                        JSONArray shipmentArray= orderDetail.getJSONArray(SHIPMENTS);
+                        for(int k=0;k<shipmentArray.length();k++){
+                            JSONObject shipmentObject=shipmentArray.getJSONObject(k);
+                            JSONArray activities=shipmentObject.getJSONArray(ACTIVITIES);
+                            for(int l=0;l<activities.length();l++){
+                                JSONObject activitObj= activities.getJSONObject(l);
+                                String name= activitObj.getString(LOCATION);
+                                String evntTime= activitObj.getString(EVENT_TIME);
+                                String activity= activitObj.getString(ACTIVITY);
+                                String iD=activitObj.getString(_ID);
+                                Log.e(LOG_TAG, "purchase detail**************************** json>>>>" + name);
+                                Log.e(LOG_TAG, "purchase detail**************************** json>>>>" + evntTime);
+                                Log.e(LOG_TAG, "purchase detail**************************** json>>>>" + activity);
+                                Log.e(LOG_TAG, "purchase detail**************************** json>>>>" + iD);
+                            }
+                        }
                     }
                 }
 
@@ -294,7 +319,6 @@ public class ProductDetailFragment extends Fragment {
 
         @Override
         protected List<ItemData> doInBackground(String... strings) {
-
             try {
                 final String PURCHASE_BASE_URAL = "http://api.tracck.com:4000/consumerOrder/" + orderId;
 

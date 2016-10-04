@@ -71,7 +71,6 @@ public class ProdAndPurchFragment extends Fragment {
         setupViewPager(viewPager);
         tabLayout = (TabLayout) view.findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
-
         return view;
     }
 
