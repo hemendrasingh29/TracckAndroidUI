@@ -139,6 +139,7 @@ public class ProductDetailFragment extends Fragment {
 //            Animation hyperAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.hyperspace_jump);
 //            dImageViewDetail.startAnimation(hyperAnimation);
 //        }
+
         return view;
     }
 

@@ -6,7 +6,6 @@
                 android:layout_height="match_parent">
 
 
-
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -47,6 +46,8 @@
 
         </android.support.design.widget.AppBarLayout>
 
+        <include layout="@layout/chat_trackstatus_cameraimage"/>
+
         <include layout="@layout/content_scrolling"/>
 
         <android.support.design.widget.FloatingActionButton
@@ -57,8 +58,7 @@
             android:src="@drawable/ic_action_add"
             app:layout_anchor="@id/app_bar"
             app:layout_anchorGravity="bottom|end"/>
-
     </android.support.design.widget.CoordinatorLayout>
 
-   <include layout="@layout/footer"/>
+    <include layout="@layout/footer"/>
 </RelativeLayout>

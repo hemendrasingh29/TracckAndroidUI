@@ -35,7 +35,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             }
         });
 
-     cameraImageView= (ImageView) findViewById(R.id.camera_image);
-      cameraImageView.setImageResource(R.drawable.camera);
+    cameraImageView= (ImageView) findViewById(R.id.camera_image);
+     cameraImageView.setImageResource(R.drawable.camera);
     }
 }
