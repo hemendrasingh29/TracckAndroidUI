@@ -38,6 +38,7 @@ import java.util.List;
 public class ProductDetailFragment extends Fragment {
     private static final String LOG_TAG = ProductDetailFragment.class.getSimpleName();
     private static final String DIALOG = "DIALOG";
+    private static final String DETAI_STATUS = "status";
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int CAMERA_RESULT_OK = 0;
     private static final String INDEX = "index";
@@ -59,7 +60,9 @@ public class ProductDetailFragment extends Fragment {
     private String payMethod, totalAmount, orderDate;
     private FrameLayout frameLayout;
     List<String> keyFeature, techSpecKey, techSpecValue, imageUrlL;
-    private Fragment fragment;
+
+    private ImageView cameraImageView;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -81,8 +84,8 @@ public class ProductDetailFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.header, container, false);
 
+        View view = inflater.inflate(R.layout.header, container, false);
         dImageViewDetail = (ImageView) view.findViewById(R.id.image_view_detail);
         final String imgUri = itemData.getItemImageUri();
         Picasso.with(getContext()).load("http://api.tracck.com:4000/productimg/" + imgUri).into(dImageViewDetail);
@@ -111,21 +114,25 @@ public class ProductDetailFragment extends Fragment {
         dDeliveryStatus.setText(itemData.getDeliveryStatus());
 
         moreInfo = (Button) view.findViewById(R.id.moreInfo);
+
         moreInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String s = (String) moreInfo.getText();
-                if (s.equals("More Detail")) {
+                String status = (String) moreInfo.getText();
+                Log.v(LOG_TAG, "****************************************" + status);
+                if (status.equals("More Detail")) {
+                    moreInfo.setText("Less Detail");
                     startProdDetailFrag();
-                    moreInfo.setText(getResources().getString(R.string.less_detail));
                 }
-                if (s.equals("Less Detail")) {
-
-                    moreInfo.setText(getResources().getString(R.string.more_detail));
-
+                if (status.equals("Less Detail")) {
+                    // moreInfo.setText("More Detail");
+                    Fragment fragment = getFragmentManager().findFragmentById(R.id.inner_frame);
+                    if (fragment.isVisible()) {
+                        fragment.getView().setVisibility(View.GONE);
+                    } else
+                        fragment.getView().setVisibility(View.VISIBLE);
                 }
             }
-
         });
 
 //        if (dImageViewDetail != null) {

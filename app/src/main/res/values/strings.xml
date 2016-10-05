@@ -37,5 +37,6 @@
     <string name="key_feature" translatable="true">Key Feature</string>
     <string name="tech_spec" translatable="true">Technical Specification</string>
     <string name="action_title" translatable="true">Settings</string>
+    <string name="prod_detail" translatable="true">More Detail</string>
 
 </resources>

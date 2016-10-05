@@ -83,7 +83,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingTop="16dp"
-                    android:text="More Detail"
+                    android:text="@string/prod_detail"
                     android:textColor="@color/dark_green"/>
             </LinearLayout>
         </LinearLayout>

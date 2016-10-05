@@ -35,6 +35,7 @@ public class ProdAndPurchFragment extends Fragment {
 
 
 
+
     static ProdAndPurchFragment newInstance(List<String> keyFeaturelist, List<String> techSpecKey, List<String> techSpecValue, String payMod,String totAmt,String ordDate) {
         Bundle args = new Bundle();
         args.putStringArrayList(LIST_KEY_FEATURE, (ArrayList<String>) keyFeaturelist);
