@@ -72,6 +72,7 @@ public class ArchiveListItem extends Fragment {
         dividerDrawable = ContextCompat.getDrawable(getActivity(), R.drawable.divider);
         RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecoration(dividerDrawable);
         mRecyclerView.addItemDecoration(dividerItemDecoration);
+
         updateUI();
         return view;
     }
