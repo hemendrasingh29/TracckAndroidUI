@@ -10,10 +10,19 @@
         android:background="@color/colorPrimary"/>
 
     <ImageView
-        android:id="@+id/camera_image"
+        android:id="@+id/camera_image_view"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_alignLeft="@id/line_vertical"
         android:layout_centerVertical="true"
+        android:layout_marginBottom="@dimen/app_bar_height"/>
+
+    <TextView
+        android:id="@+id/activity_location"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignLeft="@id/line_vertical"
+        android:layout_below="@id/camera_image_view"
+        android:text="hellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohello"
         android:layout_marginBottom="@dimen/app_bar_height"/>
    </RelativeLayout>

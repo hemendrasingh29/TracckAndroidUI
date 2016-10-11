@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -25,13 +26,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.zendynamix.tracckAndroidUI.helper.DividerItemDecoration;
-import com.example.zendynamix.tracckAndroidUI.itemdatabase.ItemBaseHelper;
 import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
 
 
 /**
@@ -44,14 +43,15 @@ public class LiveListItem extends Fragment {
     private ItemAdapter mItemAdapter;
     private Drawable dividerDrawable;
     private Context mContext;
-    private List<ItemData> itemDatalst= new ArrayList<>();
+    private List<ItemData> itemDatalst = new ArrayList<>();
     private SQLiteDatabase mItemBaseHelper, mrItemBaseHelper, mdeleteHelper;
     private Paint p = new Paint();
+    private SwipeRefreshLayout swipeRefreshLayout;
 
 
     public static LiveListItem newInstance(List<ItemData> liveList) {
         LiveListItem trackItemFragment = new LiveListItem();
-        Bundle args=new Bundle();
+        Bundle args = new Bundle();
         trackItemFragment.setArguments(args);
         args.putSerializable(LIVE_LIST_FRAGMENT, (Serializable) liveList);
         return trackItemFragment;
@@ -61,21 +61,31 @@ public class LiveListItem extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         itemDatalst = (List<ItemData>) getArguments().getSerializable(LIVE_LIST_FRAGMENT);
+
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.activity_track_item_main, container, false);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycle_list_item_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         dividerDrawable = ContextCompat.getDrawable(getActivity(), R.drawable.divider);
         RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecoration(dividerDrawable);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.activity_main_swipe_refresh_layout);
         mRecyclerView.addItemDecoration(dividerItemDecoration);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                updateUI();
+                mItemAdapter.notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
         updateUI();
         return view;
     }
+
 
     private void initSwape() {
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -126,6 +136,7 @@ public class LiveListItem extends Fragment {
         itemTouchHelper.attachToRecyclerView(mRecyclerView);
     }
 
+
     private void updateUI() {
         mItemAdapter = new ItemAdapter(mContext, itemDatalst);
         mRecyclerView.setAdapter(mItemAdapter);
@@ -135,7 +146,7 @@ public class LiveListItem extends Fragment {
     private class ItemHolder extends RecyclerView.ViewHolder {
         Button itemStatusButton, archive;
         TextView textView;
-        TextView retailer;
+        TextView retailerLive;
         ImageView imageView;
 
 
@@ -154,7 +165,7 @@ public class LiveListItem extends Fragment {
 
             imageView = (ImageView) view.findViewById(R.id.list_item_image_view);
             textView = (TextView) view.findViewById(R.id.list_item_text);
-            retailer = (TextView) view.findViewById(R.id.retailer_name);
+            retailerLive = (TextView) view.findViewById(R.id.retailer_name);
             itemStatusButton = (Button) view.findViewById(R.id.list_item_track_status_button);
         }
     }
@@ -186,15 +197,21 @@ public class LiveListItem extends Fragment {
         public void onBindViewHolder(ItemHolder holder, int position) {
             ItemData itemData = itemDataLst.get(position);
 
-            String itemName = itemData.getItemName();
+            String itemName = itemData.getProductName();
             if (itemName.length() > 16) {
                 String s = itemName.substring(0, 16);
                 String itemNm = s + "...";
                 holder.textView.setText(itemNm);
             }
-            holder.retailer.setText(getString(R.string.retailer));
+            String retailerId = itemData.getRetailerId();
+            if (retailerId.equals("55fa4a2dcedbfb9516707ce7")) {
+                holder.retailerLive.setText(getString(R.string.retailer_amazon));
+            } else {
+                holder.retailerLive.setText(getString(R.string.retailer_flipkart));
+            }
+
             holder.itemStatusButton.setText(itemData.getDeliveryStatus());
-            String itemUri = itemData.getItemImageUri();
+            String itemUri = itemData.getProductImageUri();
             if (itemUri != null) {
                 Picasso.with(getContext()).load("http://api.tracck.com:4000/productimg/" + itemUri).into(holder.imageView);
             }
@@ -219,9 +236,7 @@ public class LiveListItem extends Fragment {
         }
     }
 
-
-    void dbCreate() {
-        mContext = getActivity().getApplicationContext();
-        mItemBaseHelper = new ItemBaseHelper(mContext).getWritableDatabase();
-    }
 }
+
+
+

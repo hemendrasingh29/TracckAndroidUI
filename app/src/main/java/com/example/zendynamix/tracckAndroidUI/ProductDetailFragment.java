@@ -55,14 +55,15 @@ public class ProductDetailFragment extends Fragment {
     private Button sendButton;
     private String productId;
     private Button moreInfo;
+    private List<ItemData> imageKeyTech = new ArrayList<>();
+    private List<ItemData> actiPurch = new ArrayList<>();
     private List<ItemData> detailList = new ArrayList<>();
     private String orderId;
     private String payMethod, totalAmount, orderDate;
     private FrameLayout frameLayout;
     List<String> keyFeature, techSpecKey, techSpecValue, imageUrlL;
-
     private ImageView cameraImageView;
-
+    private TextView activityLoaction;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,11 +74,16 @@ public class ProductDetailFragment extends Fragment {
         if (bundle != null) {
             int position = bundle.getInt("position");
             itemDatList = (List<ItemData>) bundle.getSerializable("list");
+            imageKeyTech = (List<ItemData>) bundle.getSerializable("IMAGE_KEY_TEC");
+            actiPurch = (List<ItemData>) bundle.getSerializable("ACTIVITYS_PURCH");
             itemData = itemDatList.get(position);
             productId = itemData.getProductId();
             orderId = itemData.getOrderID();
+
             FetchProductDetailMoreData fetchProductDetailMoreData = new FetchProductDetailMoreData(productId);
-            fetchProductDetailMoreData.execute();
+           fetchProductDetailMoreData.execute();
+
+
         }
     }
 
@@ -87,7 +93,7 @@ public class ProductDetailFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.header, container, false);
         dImageViewDetail = (ImageView) view.findViewById(R.id.image_view_detail);
-        final String imgUri = itemData.getItemImageUri();
+        final String imgUri = itemData.getProductImageUri();
         Picasso.with(getContext()).load("http://api.tracck.com:4000/productimg/" + imgUri).into(dImageViewDetail);
         dImageViewDetail.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,7 +110,14 @@ public class ProductDetailFragment extends Fragment {
         dRetailerName = (TextView) view.findViewById(R.id.detail_retailer_name);
         dDeliveryStatus = (TextView) view.findViewById(R.id.detail_delivery_status);
         // dItemTitle.setText(itemData.getItemName());
-        dRetailerName.setText(getString(R.string.retailer));
+        String retailerId = itemData.getRetailerId();
+        if (retailerId.equals("55fa4a2dcedbfb9516707ce7")) {
+            dRetailerName.setText(getString(R.string.retailer_amazon));
+        } else {
+            dRetailerName.setText(getString(R.string.retailer_flipkart));
+        }
+
+
         String dStatus = itemData.getDeliveryStatus();
         if (dStatus.charAt(0) == 'D' || dStatus.charAt(0) == 'd') {
             dDeliveryStatus.setTextColor(getResources().getColor(R.color.dark_green));
@@ -121,18 +134,19 @@ public class ProductDetailFragment extends Fragment {
                 String status = (String) moreInfo.getText();
                 Log.v(LOG_TAG, "****************************************" + status);
                 if (status.equals("More Detail")) {
-                    moreInfo.setText("Less Detail");
                     startProdDetailFrag();
-                }
-                if (status.equals("Less Detail")) {
+                    moreInfo.setText("Less Detail");
+                } else {
                     // moreInfo.setText("More Detail");
                     Fragment fragment = getFragmentManager().findFragmentById(R.id.inner_frame);
                     if (fragment.isVisible()) {
                         fragment.getView().setVisibility(View.GONE);
                     } else
                         fragment.getView().setVisibility(View.VISIBLE);
+                    //   moreInfo.setText("More Detail");
                 }
             }
+
         });
 
 //        if (dImageViewDetail != null) {
@@ -150,6 +164,7 @@ public class ProductDetailFragment extends Fragment {
         keyFeature = itemData.getKeyLFeature();
         techSpecKey = itemData.getKeyL();
         techSpecValue = itemData.getValueL();
+
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         Fragment fragment = getFragmentManager().findFragmentById(R.id.inner_frame);
         if (fragment == null) {
@@ -162,7 +177,7 @@ public class ProductDetailFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.detail_menu, menu);
         MenuItem menuItem = menu.findItem(R.id.show_title);
-        menuItem.setTitle(itemData.getItemName());
+        menuItem.setTitle(itemData.getProductName());
 
     }
 
@@ -251,104 +266,114 @@ public class ProductDetailFragment extends Fragment {
 
         @Override
         protected void onPostExecute(List<ItemData> result) {
-            if (result != null) {
-                if (result.isEmpty()) {
-                    //   Toast.makeText(getActivity(), "NO INTERNET", Toast.LENGTH_LONG).show();
-                }
+            if (result.size() > 0) {
                 detailList.addAll(result);
                 FetchPurchaseDetail fetchPurchaseDetail = new FetchPurchaseDetail(orderId);
                 fetchPurchaseDetail.execute();
             }
         }
-    }
 
-    // PURCHASE DETAIL TASK
-    protected class FetchPurchaseDetail extends AsyncTask<String, Void, List<ItemData>> {
-        String orderID;
+        // PURCHASE DETAIL TASK
+        protected class FetchPurchaseDetail extends AsyncTask<String, Void, List<ItemData>> {
+            String orderID;
 
-        public FetchPurchaseDetail(String ordId) {
-            orderID = ordId;
-        }
+            public FetchPurchaseDetail(String ordId) {
+                orderID = ordId;
+            }
 
-        private List<ItemData> getPurchasetDataFronJason(String jasonResponse) throws JSONException {
+            private List<ItemData> getPurchasetDataFronJason(String jasonResponse) throws JSONException {
 
-            Log.e(LOG_TAG, "purchase detail json>>>>" + jasonResponse);
-            final String ORDERS = "orders";
-            final String ACTIVITIES = "activities";
-            final String SHIPMENTS = "shipments";
-            final String PAYMENT_METHOD = "paymentMethod";
-            final String ORDER_TOTAL_AMT = "orderTotalAmount";
-            final String ORDER_DATE = "orderDate";
-            final String LOCATION = "location";
-            final String EVENT_TIME = "eventTime";
-            final String ACTIVITY = "activity";
-            final String _ID = "_id";
+                Log.e(LOG_TAG, "purchase detail json>>>>" + jasonResponse);
+                final String ORDERS = "orders";
+                final String ACTIVITIES = "activities";
+                final String SHIPMENTS = "shipments";
+                final String PAYMENT_METHOD = "paymentMethod";
+                final String ORDER_TOTAL_AMT = "orderTotalAmount";
+                final String ORDER_DATE = "orderDate";
+                final String LOCATION = "location";
+                final String EVENT_TIME = "eventTime";
+                final String ACTIVITY = "activity";
+                final String _ID = "_id";
 
-            List<ItemData> result = new ArrayList<>();
-            try {
-                JSONArray jsonArray = new JSONArray(jasonResponse);
+                List<ItemData> result = new ArrayList<>();
+                try {
+                    JSONArray jsonArray = new JSONArray(jasonResponse);
 
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
 
-                    JSONArray orderArray = jsonObject.getJSONArray(ORDERS);
+                        JSONArray orderArray = jsonObject.getJSONArray(ORDERS);
 
-                    for (int j = 0; j < orderArray.length(); j++) {
-                        JSONObject orderDetail = orderArray.getJSONObject(j);
-                        String paymentMethod = orderDetail.getString(PAYMENT_METHOD);
-                        String totalAmount = orderDetail.getString(ORDER_TOTAL_AMT);
-                        String orderDate = orderDetail.getString(ORDER_DATE);
+                        for (int j = 0; j < orderArray.length(); j++) {
+                            JSONObject orderDetail = orderArray.getJSONObject(j);
+                            String paymentMethod = orderDetail.getString(PAYMENT_METHOD);
+                            String totalAmount = orderDetail.getString(ORDER_TOTAL_AMT);
+                            String orderDate = orderDetail.getString(ORDER_DATE);
 
-                        itemData.setPaymentMethod(paymentMethod);
-                        itemData.setOrderDate(orderDate);
-                        itemData.setTotalAmount(totalAmount);
-                        result.add(itemData);
+                            itemData.setPaymentMethod(paymentMethod);
+                            itemData.setOrderDate(orderDate);
+                            itemData.setTotalAmount(totalAmount);
+                            result.add(itemData);
 
-                        JSONArray shipmentArray = orderDetail.getJSONArray(SHIPMENTS);
-                        for (int k = 0; k < shipmentArray.length(); k++) {
-                            JSONObject shipmentObject = shipmentArray.getJSONObject(k);
-                            JSONArray activities = shipmentObject.getJSONArray(ACTIVITIES);
-                            for (int l = 0; l < activities.length(); l++) {
-                                JSONObject activitObj = activities.getJSONObject(l);
-                                String name = activitObj.getString(LOCATION);
-                                String evntTime = activitObj.getString(EVENT_TIME);
-                                String activity = activitObj.getString(ACTIVITY);
-                                String iD = activitObj.getString(_ID);
-                                Log.e(LOG_TAG, "purchase detail**************************** json>>>>" + name);
-                                Log.e(LOG_TAG, "purchase detail**************************** json>>>>" + evntTime);
-                                Log.e(LOG_TAG, "purchase detail**************************** json>>>>" + activity);
-                                Log.e(LOG_TAG, "purchase detail**************************** json>>>>" + iD);
+                            JSONArray shipmentArray = orderDetail.getJSONArray(SHIPMENTS);
+                            for (int k = 0; k < shipmentArray.length(); k++) {
+                                JSONObject shipmentObject = shipmentArray.getJSONObject(k);
+                                JSONArray activities = shipmentObject.getJSONArray(ACTIVITIES);
+                                for (int l = 0; l < activities.length(); l++) {
+                                    JSONObject activitObj = activities.getJSONObject(l);
+                                    try {
+                                        String locationNmae = activitObj.getString(LOCATION);
+                                        String eventTime = activitObj.getString(EVENT_TIME);
+                                        String activity = activitObj.getString(ACTIVITY);
+                                        String activityId = activitObj.getString(_ID);
+//
+//                                        itemData.setLocationName(locationNmae);
+//                                        itemData.setEventTime(eventTime);
+//                                        itemData.setOrderctivity(activity);
+//                                        itemData.setActtivityId(activityId);
+
+
+                                    } catch (JSONException e) {
+                                        Log.v(LOG_TAG, "jsonError" + e);
+
+
+                                    }
+                                }
                             }
                         }
                     }
+
+                } catch (JSONException e) {
+                    Log.e(LOG_TAG, e.getMessage(), e);
                 }
+                Log.e(LOG_TAG,"************"+result.size());
+                return result;
 
-            } catch (JSONException e) {
-                Log.e(LOG_TAG, e.getMessage(), e);
             }
-            return result;
-        }
 
-        @Override
-        protected List<ItemData> doInBackground(String... strings) {
-            try {
-                final String PURCHASE_BASE_URAL = "http://api.tracck.com:4000/consumerOrder/" + orderId;
+            @Override
+            protected List<ItemData> doInBackground(String... strings) {
+                try {
+                    final String PURCHASE_BASE_URAL = "http://api.tracck.com:4000/consumerOrder/" + orderId;
 
-                Uri buildUri = Uri.parse(PURCHASE_BASE_URAL);
+                    Uri buildUri = Uri.parse(PURCHASE_BASE_URAL);
 
-                return getPurchasetDataFronJason(ConnectionHelper.fetch(buildUri.toString()));
-            } catch (JSONException e) {
-                Log.e(LOG_TAG, e.getMessage(), e);
+                    return getPurchasetDataFronJason(ConnectionHelper.fetch(buildUri.toString()));
+                } catch (JSONException e) {
+                    Log.e(LOG_TAG, e.getMessage(), e);
+                }
+                return null;
             }
-            return null;
+
+            @Override
+            protected void onPostExecute(List<ItemData> itemDatas) {
+                payMethod = itemData.getPaymentMethod();
+                totalAmount = itemData.getTotalAmount();
+                orderDate = itemData.getOrderDate();
+            }
         }
 
-        @Override
-        protected void onPostExecute(List<ItemData> itemDatas) {
-            payMethod = itemData.getPaymentMethod();
-            totalAmount = itemData.getTotalAmount();
-            orderDate = itemData.getOrderDate();
-        }
     }
+
 
 }

@@ -6,6 +6,7 @@
                 android:layout_height="match_parent">
 
 
+    <include layout="@layout/chat_trackstatus_cameraimage"/>
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -19,7 +20,6 @@
             android:layout_height="@dimen/app_bar_height"
             android:fitsSystemWindows="true"
             android:theme="@style/AppTheme">
-
 
             <android.support.design.widget.CollapsingToolbarLayout
                 android:id="@+id/toolbar_layout"
@@ -46,7 +46,7 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <include layout="@layout/chat_trackstatus_cameraimage"/>
+
 
         <include layout="@layout/content_scrolling"/>
 

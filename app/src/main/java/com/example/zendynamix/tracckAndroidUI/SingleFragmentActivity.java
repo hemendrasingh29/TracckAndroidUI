@@ -3,6 +3,8 @@ package com.example.zendynamix.tracckAndroidUI;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +13,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+
+import com.example.zendynamix.tracckAndroidUI.sync.ItemSyncAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +31,7 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
     private List<DrawerData> drawerDatas=new ArrayList<>();
 
 
-  //  protected abstract Fragment createFragment();
+    protected abstract Fragment createFragment();
 
     @LayoutRes
     protected int getLayoutResId() {
@@ -37,17 +41,18 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ItemSyncAdapter.initializeSyncAdapter(this);
         setContentView(getLayoutResId());
+
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
-       // setTitle(Html.fromHtml("<font color='#ff0000'>hello </font>"));
 
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        Fragment fragment = fragmentManager.findFragmentById(R.id.fragment_container);
-//        if (fragment == null) {
-//            fragment = createFragment();
-//            fragmentManager.beginTransaction().add(R.id.fragment_container, fragment).commit();
-//        }
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentById(R.id.fragment_container);
+        if (fragment == null) {
+            fragment = createFragment();
+            fragmentManager.beginTransaction().add(R.id.fragment_container, fragment).commit();
+        }
 
         mDrawerList = (ListView) findViewById(R.id.navList);
         drawerAdapter= new DrawerAdapter(this,drawerDatas);
@@ -71,7 +76,7 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
 
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-               // getSupportActionBar().setTitle("Navigation!");
+                // getSupportActionBar().setTitle("Navigation!");
                 invalidateOptionsMenu();
             }
             public void onDrawerClosed(View view) {
@@ -124,6 +129,7 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 
 }
 

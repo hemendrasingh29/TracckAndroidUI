@@ -13,10 +13,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +46,7 @@ public class ArchiveListItem extends Fragment {
     private Context mContext;
     private List<ItemData> itemDatalst;
     private Paint p = new Paint();
+    private SwipeRefreshLayout swipeRefreshLayout;
 
 
     public static ArchiveListItem newInstance(List<ItemData> archList) {
@@ -60,6 +61,7 @@ public class ArchiveListItem extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         itemDatalst= (List<ItemData>)getArguments().getSerializable(ARCHIVE_LIST);
+
     }
 
     @Nullable
@@ -72,6 +74,16 @@ public class ArchiveListItem extends Fragment {
         dividerDrawable = ContextCompat.getDrawable(getActivity(), R.drawable.divider);
         RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecoration(dividerDrawable);
         mRecyclerView.addItemDecoration(dividerItemDecoration);
+
+        swipeRefreshLayout=(SwipeRefreshLayout) view.findViewById(R.id.activity_main_swipe_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                updateUI();
+                mItemAdapter.notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
 
         updateUI();
         return view;
@@ -146,8 +158,7 @@ public class ArchiveListItem extends Fragment {
                 @Override
                 public void onClick(View view) {
                     int itemPosition = getAdapterPosition();
-                    Log.v(LOG_TAG, "position" + itemPosition);
-                    Intent intent = new Intent(getActivity(), ProductDetailActivity.class);
+                    Intent intent = new Intent(getActivity(),ProductDetailActivity.class);
                     intent.putExtra("position", itemPosition);
                     intent.putExtra("list", (Serializable) itemDatalst);
                     startActivity(intent);
@@ -188,15 +199,20 @@ public class ArchiveListItem extends Fragment {
         public void onBindViewHolder(ItemHolder holder, int position) {
             ItemData itemData = itemDataLst.get(position);
 
-            String itemName = itemData.getItemName();
+            String itemName = itemData.getProductName();
             if (itemName.length() > 16) {
                 String s = itemName.substring(0, 16);
                 String itemNm = s + "...";
                 holder.archTextView.setText(itemNm);
             }
-            holder.archRetailer.setText(getString(R.string.retailer));
+            String retailerId=itemData.getRetailerId();
+            if(retailerId.equals("55fa4a2dcedbfb9516707ce7")){
+                holder.archRetailer.setText(getString(R.string.retailer_amazon));
+            }else{
+                holder.archRetailer.setText(getString(R.string.retailer_flipkart));
+            }
             holder.archItemStatusButton.setText(itemData.getDeliveryStatus());
-            String itemUri = itemData.getItemImageUri();
+            String itemUri = itemData.getProductImageUri();
             if (itemUri != null) {
                 Picasso.with(getContext()).load("http://api.tracck.com:4000/productimg/" + itemUri).into(holder.archImageView);
             }

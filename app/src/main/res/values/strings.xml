@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TrackItem</string>
+    <string name="app_name">tracckAndroidUI</string>
     <string name="action_settings">Settings</string>
 
     <string name="drawer_open">Open navigation drawer</string>
@@ -27,7 +27,9 @@
     <string name="send" translatable="false">Send</string>
     <string name="chat" translatable="false">Chat</string>
     <string name="item_name">%1$s</string>
-    <string name="retailer" translatable="true">Amazon India</string>
+
+    <string name="retailer_amazon" translatable="true">Amazon India</string>
+    <string name="retailer_flipkart" translatable="true">FlipKart</string>
     <string name="detail_menu">%1$s</string>
     <string name="hello">Hello World, AndroidExpanAnimationActivity!</string>
     <string name="purchase_detail" translatable="true">Purchase Detail</string>
@@ -38,5 +40,31 @@
     <string name="tech_spec" translatable="true">Technical Specification</string>
     <string name="action_title" translatable="true">Settings</string>
     <string name="prod_detail" translatable="true">More Detail</string>
+
+    <string name="archive" translatable="true">Archive</string>
+
+    <string name="sync_account_type">zendynamix.example.com</string>
+    <string name="pref_enable_notifications_label">Order Notifications</string>
+
+    <string name="pref_enable_notifications_true">Enabled</string>
+    <string name="pref_enable_notifications_false">Not Enabled</string>
+    <string name="pref_enable_notifications_default" translatable="false">true</string>
+    <string name="pref_location_key" translatable="false">location</string>
+    <string name="pref_units_label">Temperature Units</string>
+    <string name="pref_enable_notifications_key" translatable="false">enable_notifications</string>
+    <string name="pref_location_label">Location</string>
+    <string name="pref_location_default" translatable="false">94043</string>
+    <string name="pref_units_key" translatable="false">units</string>
+    <string name="pref_units_metric" translatable="false">metric</string>
+
+    <!-- Value in SharedPreferences for imperial temperature unit option [CHAR LIMIT=NONE] -->
+    <string name="pref_units_imperial" translatable="false">imperial</string>
+
+    <string name="pref_units_label_imperial">Imperial</string>
+    <!-- Label for metric option in temperature unit preference [CHAR LIMIT=25] -->
+    <string name="pref_units_label_metric">Metric</string>
+    <string name="content_authority">com.example.zendynamix.tracckAndroidUI</string>
+    <string name="pref_last_notification">last_notification</string>
+
 
 </resources>

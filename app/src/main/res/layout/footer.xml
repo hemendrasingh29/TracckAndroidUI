@@ -23,7 +23,7 @@
             android:text="chat"/>
 
         <ImageButton
-            android:id="@+id/camera"
+            android:id="@+id/camera_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="150dp"

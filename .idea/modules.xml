@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/TracckAndroidUI.iml" filepath="$PROJECT_DIR$/TracckAndroidUI.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tracckAndroidUI.iml" filepath="$PROJECT_DIR$/tracckAndroidUI.iml" />
     </modules>
   </component>
 </project>
