@@ -1,28 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-    <View
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/line_vertical"
-        android:background="@color/colorPrimary"/>
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+        <View
+            android:layout_width="1dp"
+            android:layout_marginTop="100dp"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/line_vertical"
+            android:background="@color/colorPrimary"/>
 
-    <ImageView
-        android:id="@+id/camera_image_view"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_alignLeft="@id/line_vertical"
-        android:layout_centerVertical="true"
-        android:layout_marginBottom="@dimen/app_bar_height"/>
-
+        <ImageView
+            android:id="@+id/camera_image_view"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_alignLeft="@id/line_vertical"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="@dimen/app_bar_height"/>
     <TextView
-        android:id="@+id/activity_location"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_alignLeft="@id/line_vertical"
-        android:layout_below="@id/camera_image_view"
-        android:text="hellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohello"
-        android:layout_marginBottom="@dimen/app_bar_height"/>
-   </RelativeLayout>
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+       android:text="hello"
+        android:textSize="100dp"/>
+
+
+        <TextView
+            android:id="@+id/event_time_textview"
+            android:layout_marginTop="120dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@id/line_vertical"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="20dp"/>
+
+    </RelativeLayout>
+

@@ -3,6 +3,7 @@ package com.example.zendynamix.tracckAndroidUI;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
@@ -26,21 +27,23 @@ public class TrackItemMainActivity extends SingleFragmentActivity {
         return TabbedMainFragment.newInstance(liveList, archiveList);
     }
 //
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//    }
-//
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
 //    @Override
 //    public void onSubmitButton(String number) {
-
+//
 //        if (number.equals("999999999")) {
-//            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, LiveListItem.newInstance()).commit();
+//            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, TabbedMainFragment.newInstance(liveList, archiveList)).commit();
+//            dbReade();
 //        } else {
 //            Toast toast = Toast.makeText(this, "Check Number", Toast.LENGTH_SHORT);
 //            toast.setGravity(Gravity.CENTER | Gravity.CENTER_HORIZONTAL, 0, 0);
 //            toast.show();
 //        }
+//    }
 
 
     void dbReade() {
@@ -57,8 +60,6 @@ public class TrackItemMainActivity extends SingleFragmentActivity {
                 ItemContract.ConsumerOrder.Cols.ARCHIVE,
                 ItemContract.ConsumerOrder.Cols.IMAGE_URI};
 
-//        String selection = ItemContract.ConsumerOrder.Cols.RETAILER_ID + " = ?";
-//        String[] selectionArgs = {"55fa4a2dcedbfb9516707ce7"};
         Cursor cur = mrItemBaseHelper.query(ItemContract.ConsumerOrder.TABLE_NAME, projection, null, null, null, null, ItemContract.ConsumerOrder.Cols.ORDER_DATE + " DESC");
         if (cur.moveToFirst()) {
             while (cur.isAfterLast() == false) {

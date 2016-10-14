@@ -25,7 +25,7 @@ public class ItemBaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
         sqLiteDatabase.execSQL("CREATE TABLE "+ConsumerOrder.TABLE_NAME +" ("+
-                ConsumerOrder.Cols.ORDER_ID+","+
+                ConsumerOrder.Cols.ORDER_ID+ ","+
                 ConsumerOrder.Cols.RETAILER_ID + "," +
                 ConsumerOrder.Cols.ORDER_DATE + "," +
                 ConsumerOrder.Cols.PRODUCT_DELIVERY_STATUS + "," +
@@ -33,9 +33,9 @@ public class ItemBaseHelper extends SQLiteOpenHelper {
                 ConsumerOrder.Cols.PRODUCT_ID  + "," +
                 ConsumerOrder.Cols.ARCHIVE +","+
                 ConsumerOrder.Cols.IMAGE_URI +",PRIMARY KEY ("+
-                ConsumerOrder.Cols.PRODUCT_ID +","+
-                ConsumerOrder.Cols.RETAILER_ID +","+
-                ConsumerOrder.Cols.ORDER_DATE + "))");
+                ConsumerOrder.Cols.ORDER_ID +","+
+                ConsumerOrder.Cols.ORDER_DATE +","+
+                ConsumerOrder.Cols.PRODUCT_ID + "))");
 
 //        sqLiteDatabase.execSQL("CREATE TABLE "+ RetailerEntry.TABLE_NAME+"("+RetailerEntry.Cols.RETAILER_ID +","+
 //                RetailerEntry.Cols.RETAILER_SHORT_NAME +","+

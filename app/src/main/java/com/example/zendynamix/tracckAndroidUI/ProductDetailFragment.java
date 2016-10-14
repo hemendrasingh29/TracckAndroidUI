@@ -3,8 +3,6 @@ package com.example.zendynamix.tracckAndroidUI;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -21,12 +19,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.zendynamix.tracckAndroidUI.helper.ConnectionHelper;
 import com.squareup.picasso.Picasso;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -38,6 +31,8 @@ import java.util.List;
 public class ProductDetailFragment extends Fragment {
     private static final String LOG_TAG = ProductDetailFragment.class.getSimpleName();
     private static final String DIALOG = "DIALOG";
+    private static final String KEY_FEATURE_LIST="keyFeature";
+    private static final String TEC_SPEC_KAY_LIST="tecSpecKey";
     private static final String DETAI_STATUS = "status";
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int CAMERA_RESULT_OK = 0;
@@ -55,8 +50,8 @@ public class ProductDetailFragment extends Fragment {
     private Button sendButton;
     private String productId;
     private Button moreInfo;
-    private List<ItemData> imageKeyTech = new ArrayList<>();
-    private List<ItemData> actiPurch = new ArrayList<>();
+    private List<ItemData> imageKeyTech;
+    private List<ItemData> actiPurch;
     private List<ItemData> detailList = new ArrayList<>();
     private String orderId;
     private String payMethod, totalAmount, orderDate;
@@ -65,6 +60,8 @@ public class ProductDetailFragment extends Fragment {
     private ImageView cameraImageView;
     private TextView activityLoaction;
 
+
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,18 +69,13 @@ public class ProductDetailFragment extends Fragment {
 
         Bundle bundle = getActivity().getIntent().getExtras();
         if (bundle != null) {
-            int position = bundle.getInt("position");
-            itemDatList = (List<ItemData>) bundle.getSerializable("list");
+            int position = bundle.getInt("POSITION");
+            itemDatList = (List<ItemData>) bundle.getSerializable("MAINLIST");
             imageKeyTech = (List<ItemData>) bundle.getSerializable("IMAGE_KEY_TEC");
             actiPurch = (List<ItemData>) bundle.getSerializable("ACTIVITYS_PURCH");
             itemData = itemDatList.get(position);
             productId = itemData.getProductId();
             orderId = itemData.getOrderID();
-
-            FetchProductDetailMoreData fetchProductDetailMoreData = new FetchProductDetailMoreData(productId);
-           fetchProductDetailMoreData.execute();
-
-
         }
     }
 
@@ -98,8 +90,8 @@ public class ProductDetailFragment extends Fragment {
         dImageViewDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                for (int i = 0; i < detailList.size(); i++) {
-                    itemData = detailList.get(i);
+                for (int i = 0; i < imageKeyTech.size(); i++) {
+                    itemData = imageKeyTech.get(i);
                 }
                 imageUrlL = itemData.getImageUrls();
                 Intent intent = ImagePagerActivity.newIntent(getActivity(), imageUrlL);
@@ -137,40 +129,50 @@ public class ProductDetailFragment extends Fragment {
                     startProdDetailFrag();
                     moreInfo.setText("Less Detail");
                 } else {
-                    // moreInfo.setText("More Detail");
+
                     Fragment fragment = getFragmentManager().findFragmentById(R.id.inner_frame);
                     if (fragment.isVisible()) {
                         fragment.getView().setVisibility(View.GONE);
                     } else
                         fragment.getView().setVisibility(View.VISIBLE);
-                    //   moreInfo.setText("More Detail");
+
                 }
             }
 
         });
 
-//        if (dImageViewDetail != null) {
-//            Animation hyperAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.hyperspace_jump);
-//            dImageViewDetail.startAnimation(hyperAnimation);
-//        }
-
         return view;
     }
 
+    void createActivtyFrag(){
+    FragmentManager fragmentManager=getActivity().getSupportFragmentManager();
+        ChatTrackstatusCameraimage chatTrackstatusCameraimage=new ChatTrackstatusCameraimage();
+        fragmentManager.beginTransaction().replace(R.id.inner_frame,chatTrackstatusCameraimage).commit();
+    }
+
     private void startProdDetailFrag() {
-        for (int i = 0; i < detailList.size(); i++) {
-            itemData = detailList.get(i);
+        for (int i = 0; i < imageKeyTech.size(); i++) {
+            itemData = imageKeyTech.get(i);
         }
         keyFeature = itemData.getKeyLFeature();
         techSpecKey = itemData.getKeyL();
         techSpecValue = itemData.getValueL();
+        for (int i = 0; i < actiPurch.size(); i++) {
+            itemData = actiPurch.get(i);
+
+            payMethod = itemData.getPaymentMethod();
+            totalAmount = itemData.getTotalAmount();
+            orderDate = itemData.getOrderDate();
+        }
 
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        Fragment fragment = getFragmentManager().findFragmentById(R.id.inner_frame);
-        if (fragment == null) {
-            fragmentManager.beginTransaction().replace(R.id.inner_frame, ProdAndPurchFragment.newInstance(keyFeature, techSpecKey, techSpecValue, payMethod, totalAmount, orderDate)).commit();
-        }
+        //  Fragment fragment = getFragmentManager().findFragmentById(R.id.inner_frame);
+        // if () {
+        fragmentManager.beginTransaction().replace(R.id.inner_frame, ProdAndPurchFragment.newInstance(keyFeature, techSpecKey, techSpecValue, payMethod, totalAmount, orderDate)).commit();
+        // }
+
     }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -190,190 +192,4 @@ public class ProductDetailFragment extends Fragment {
                 return super.onOptionsItemSelected(item);
         }
     }
-
-    // PRODUCT DETAIL TASK
-    protected class FetchProductDetailMoreData extends AsyncTask<String, Void, List<ItemData>> {
-        String pid;
-
-        public FetchProductDetailMoreData(String productID) {
-            pid = productID;
-        }
-
-        private List<ItemData> getProductDataFromJson(String jsonResponse)
-                throws JSONException {
-
-            Log.e(LOG_TAG, "JSON DATA>>>>" + jsonResponse);
-            final String PRODUCT_NAME = "name";
-            final String IMAGE_URLS = "imageUrls";
-            final String KEY_FEATURE = "keyFeatures";
-            final String TECH_SPECIFICATION = "techSpecification";
-            final String KEY = "key";
-            final String VALUE = "value";
-            List<ItemData> result = new ArrayList<>();
-            List<String> kFeature = new ArrayList<>();
-            List<String> imgUrlsList = new ArrayList<>();
-            List<String> techSpecKey = new ArrayList<>();
-            List<String> techSpecValue = new ArrayList<>();
-            ItemData data = new ItemData();
-            try {
-
-                JSONObject jsonObject = new JSONObject(jsonResponse);
-                String prodName = jsonObject.getString(PRODUCT_NAME);
-                data.setProductName(prodName);
-                JSONArray imgUrls = jsonObject.optJSONArray(IMAGE_URLS);
-                for (int i = 0; i < imgUrls.length(); i++) {
-                    String imageUrl = imgUrls.getString(i);
-                    imgUrlsList.add(imageUrl);
-                    data.addImageUrls(imgUrlsList);
-                    result.add(data);
-                }
-                JSONArray keyFeature = jsonObject.getJSONArray(KEY_FEATURE);
-                for (int j = 0; j < keyFeature.length(); j++) {
-                    String keyFea = keyFeature.getString(j);
-                    kFeature.add(keyFea);
-                    data.addKeyLFeature(kFeature);
-                    result.add(data);
-                }
-                JSONArray techspec = jsonObject.getJSONArray(TECH_SPECIFICATION);
-                for (int k = 0; k < techspec.length(); k++) {
-                    JSONObject tspec = techspec.getJSONObject(k);
-                    String key = tspec.getString(KEY);
-                    String value = tspec.getString(VALUE);
-                    techSpecKey.add(key);
-                    techSpecValue.add(value);
-                    data.addKeyL(techSpecKey);
-                    data.addValueL(techSpecValue);
-                    result.add(data);
-                }
-            } catch (JSONException e) {
-                Log.e(LOG_TAG, "Error ", e);
-            }
-            return result;
-        }
-
-        @Override
-        protected List<ItemData> doInBackground(String... param) {
-
-            try {
-                final String FORECAST_BASE_URL = "http://api.tracck.com:4000/productDetail/amazonIndia/" + pid;
-                Uri builtUri = Uri.parse(FORECAST_BASE_URL);
-                return getProductDataFromJson(ConnectionHelper.fetch(builtUri.toString()));
-            } catch (JSONException e) {
-                Log.e(LOG_TAG, e.getMessage(), e);
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(List<ItemData> result) {
-            if (result.size() > 0) {
-                detailList.addAll(result);
-                FetchPurchaseDetail fetchPurchaseDetail = new FetchPurchaseDetail(orderId);
-                fetchPurchaseDetail.execute();
-            }
-        }
-
-        // PURCHASE DETAIL TASK
-        protected class FetchPurchaseDetail extends AsyncTask<String, Void, List<ItemData>> {
-            String orderID;
-
-            public FetchPurchaseDetail(String ordId) {
-                orderID = ordId;
-            }
-
-            private List<ItemData> getPurchasetDataFronJason(String jasonResponse) throws JSONException {
-
-                Log.e(LOG_TAG, "purchase detail json>>>>" + jasonResponse);
-                final String ORDERS = "orders";
-                final String ACTIVITIES = "activities";
-                final String SHIPMENTS = "shipments";
-                final String PAYMENT_METHOD = "paymentMethod";
-                final String ORDER_TOTAL_AMT = "orderTotalAmount";
-                final String ORDER_DATE = "orderDate";
-                final String LOCATION = "location";
-                final String EVENT_TIME = "eventTime";
-                final String ACTIVITY = "activity";
-                final String _ID = "_id";
-
-                List<ItemData> result = new ArrayList<>();
-                try {
-                    JSONArray jsonArray = new JSONArray(jasonResponse);
-
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-                        JSONArray orderArray = jsonObject.getJSONArray(ORDERS);
-
-                        for (int j = 0; j < orderArray.length(); j++) {
-                            JSONObject orderDetail = orderArray.getJSONObject(j);
-                            String paymentMethod = orderDetail.getString(PAYMENT_METHOD);
-                            String totalAmount = orderDetail.getString(ORDER_TOTAL_AMT);
-                            String orderDate = orderDetail.getString(ORDER_DATE);
-
-                            itemData.setPaymentMethod(paymentMethod);
-                            itemData.setOrderDate(orderDate);
-                            itemData.setTotalAmount(totalAmount);
-                            result.add(itemData);
-
-                            JSONArray shipmentArray = orderDetail.getJSONArray(SHIPMENTS);
-                            for (int k = 0; k < shipmentArray.length(); k++) {
-                                JSONObject shipmentObject = shipmentArray.getJSONObject(k);
-                                JSONArray activities = shipmentObject.getJSONArray(ACTIVITIES);
-                                for (int l = 0; l < activities.length(); l++) {
-                                    JSONObject activitObj = activities.getJSONObject(l);
-                                    try {
-                                        String locationNmae = activitObj.getString(LOCATION);
-                                        String eventTime = activitObj.getString(EVENT_TIME);
-                                        String activity = activitObj.getString(ACTIVITY);
-                                        String activityId = activitObj.getString(_ID);
-//
-//                                        itemData.setLocationName(locationNmae);
-//                                        itemData.setEventTime(eventTime);
-//                                        itemData.setOrderctivity(activity);
-//                                        itemData.setActtivityId(activityId);
-
-
-                                    } catch (JSONException e) {
-                                        Log.v(LOG_TAG, "jsonError" + e);
-
-
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                } catch (JSONException e) {
-                    Log.e(LOG_TAG, e.getMessage(), e);
-                }
-                Log.e(LOG_TAG,"************"+result.size());
-                return result;
-
-            }
-
-            @Override
-            protected List<ItemData> doInBackground(String... strings) {
-                try {
-                    final String PURCHASE_BASE_URAL = "http://api.tracck.com:4000/consumerOrder/" + orderId;
-
-                    Uri buildUri = Uri.parse(PURCHASE_BASE_URAL);
-
-                    return getPurchasetDataFronJason(ConnectionHelper.fetch(buildUri.toString()));
-                } catch (JSONException e) {
-                    Log.e(LOG_TAG, e.getMessage(), e);
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(List<ItemData> itemDatas) {
-                payMethod = itemData.getPaymentMethod();
-                totalAmount = itemData.getTotalAmount();
-                orderDate = itemData.getOrderDate();
-            }
-        }
-
-    }
-
-
 }

@@ -27,30 +27,30 @@ public final class ItemContract {
 
         public static final class Cols {
             public static final String ORDER_ID="orderId";
-            public static final String RETAILER_ID = "retailerId";
+            public static final String RETAILER_ID ="retailerId";
             public static final String ORDER_DATE="orderDate";
-            public static final String PRODUCT_DELIVERY_STATUS = "currentStatus";
-            public static final String PRODUCT_NAME = "productName";
+            public static final String PRODUCT_DELIVERY_STATUS ="currentStatus";
+            public static final String PRODUCT_NAME ="productName";
             public static final String PRODUCT_ID="productId";
-            public static final String ARCHIVE = "archive";
-            public static final String IMAGE_URI = "imageUrl";
+            public static final String ARCHIVE ="archive";
+            public static final String IMAGE_URI ="imageUrl";
         }
         public static Uri buildOrder() {
             return CONTENT_URI.buildUpon().appendPath(CONTENT_TYPE).build();
         }
     }
 
-        public static final class RetailerEntry implements BaseColumns {
-            public static final String TABLE_NAME = "retailer";
-
-            public static final class Cols {
-                public static final String RETAILER_ID = "retailerId";
-                public static final String RETAILER_SHORT_NAME = "retSortName";
-                public static final String RETAILER_FULL_NAME = "retFullName";
-                public static final String RETAILER_DISPLAY_NAME = "retDisplyName";
-
-            }
-        }
+//        public static final class RetailerEntry implements BaseColumns {
+//            public static final String TABLE_NAME = "retailer";
+//
+//            public static final class Cols {
+//                public static final String RETAILER_ID = "retailerId";
+//                public static final String RETAILER_SHORT_NAME = "retSortName";
+//                public static final String RETAILER_FULL_NAME = "retFullName";
+//                public static final String RETAILER_DISPLAY_NAME = "retDisplyName";
+//
+//            }
+//        }
 //
 //        public static final class Product implements BaseColumns {
 //            public static final String TABLE_NAME = "product";

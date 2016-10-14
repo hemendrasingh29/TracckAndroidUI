@@ -10,14 +10,19 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.zendynamix.tracckAndroidUI.utils.PictureUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ProductDetailActivity extends AppCompatActivity {
@@ -29,37 +34,38 @@ public class ProductDetailActivity extends AppCompatActivity {
     private ItemData itemData = new ItemData();
     ImageView cameraImageView, cameraButton;
     Button sendButton;
+    TextView locationTview, eventTimeTview, activityTview, activityIdTview;
 
-    private List<ItemData> imageKeyTech = new ArrayList<>();
-    private List<ItemData> activityPurch = new ArrayList<>();
+    private List<ItemData> imageKeyTech;
+    private List<ItemData> activityPurch;
     private List<ItemData> mainLst = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        Bundle bundle = getIntent().getExtras();
-//        int position = bundle.getInt("POSITION");
-//        imageKeyTech = (List<ItemData>) bundle.getSerializable("IMAGE_KEY_TEC");
-//        activityPurch = (List<ItemData>) bundle.getSerializable("ACTIVITYS_PURCH");
-//        mainLst = (List<ItemData>) bundle.getSerializable("MAINLIST");
-//         itemData=mainLst.get(position);
-//        String retailer=itemData.getRetailerId();
-
-        //Log.v(LOG, "**********" + imageKeyTech.size()+"************"+retailer);
-
-
-        photoFile = getPhotoFile(itemData);
         setContentView(R.layout.activity_detail);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        Bundle bundle = getIntent().getExtras();
+        int position = bundle.getInt("POSITION");
+        imageKeyTech = (List<ItemData>) bundle.getSerializable("IMAGE_KEY_TEC");
+        activityPurch = (List<ItemData>) bundle.getSerializable("ACTIVITYS_PURCH");
+        mainLst = (List<ItemData>) bundle.getSerializable("MAINLIST");
+        itemData = mainLst.get(position);
+
+        photoFile = getPhotoFile(itemData);
+        //setContentView(R.layout.activity_detail);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            if (savedInstanceState == null) {
-                ProductDetailFragment productDetailFragment = new ProductDetailFragment();
+        if (savedInstanceState == null) {
+            ProductDetailFragment productDetailFragment = new ProductDetailFragment();
 
-                getSupportFragmentManager().beginTransaction().add(R.id.container_header, productDetailFragment).commit();
-            }
-
+            getSupportFragmentManager().beginTransaction().add(R.id.container_header, productDetailFragment).commit();
+        }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -78,18 +84,38 @@ public class ProductDetailActivity extends AppCompatActivity {
             }
         });
         cameraButton = (ImageView) findViewById(R.id.camera_image);
+
+
         cameraImageView = (ImageView) this.findViewById(R.id.camera_image_view);
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                animCambutton();
                 dispatchTakePictureIntent();
                 updatePhotoView();
             }
         });
         updatePhotoView();
 
-//        activityLoaction=(TextView) findViewById(R.id.activity_location);
-//        activityLoaction.setText((CharSequence) itemData.getLocationName());
+        for (int i = 0; i < activityPurch.size(); i++) {
+            itemData = activityPurch.get(i);
+        }
+        List<String> eventActivity = itemData.getOrderActvity();
+        List<String> eventDateTime = itemData.getEventTime();
+        Collections.reverse(eventActivity);
+        Collections.reverse(eventDateTime);
+        Log.v(LOG, "********rever*********" + eventActivity);
+        eventTimeTview = (TextView) findViewById(R.id.event_time_textview);
+
+        for (String s : eventActivity) {
+            eventTimeTview.append(s + "\n\n\n\n");
+        }
+
+    }
+
+    void animCambutton() {
+        Animation hyperAnimation = AnimationUtils.loadAnimation(this, R.anim.cam_button_jump);
+        cameraButton.startAnimation(hyperAnimation);
     }
 
     private void dispatchTakePictureIntent() {
@@ -133,4 +159,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         super.onRestart();
         updatePhotoView();
     }
+
 }
+
+

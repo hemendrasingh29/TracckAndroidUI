@@ -22,7 +22,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".TrackItemMainActivity"
+            android:name=".LaunchingActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -75,6 +75,9 @@
         </service>
 
         <activity android:name=".DetailFetchActivity">
+        </activity>
+
+        <activity android:name=".TrackItemMainActivity">
         </activity>
     </application>
 

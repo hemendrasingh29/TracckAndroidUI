@@ -158,7 +158,7 @@ public class ArchiveListItem extends Fragment {
                 @Override
                 public void onClick(View view) {
                     int itemPosition = getAdapterPosition();
-                    Intent intent = new Intent(getActivity(),ProductDetailActivity.class);
+                    Intent intent = new Intent(getActivity(),DetailFetchActivity.class);
                     intent.putExtra("position", itemPosition);
                     intent.putExtra("list", (Serializable) itemDatalst);
                     startActivity(intent);
