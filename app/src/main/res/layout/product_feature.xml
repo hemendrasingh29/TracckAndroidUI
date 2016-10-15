@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:paddingRight="16dp"
         android:paddingLeft="16dp"
+        android:background="@color/white"
         android:orientation="vertical">
 
         <TextView

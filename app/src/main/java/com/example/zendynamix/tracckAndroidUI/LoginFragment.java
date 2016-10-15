@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -24,6 +25,7 @@ public class LoginFragment extends Fragment {
     private AutoCompleteTextView editTextCountry;
     private EditText editTextNumber;
     private Button buttonSubmit;
+    private TextView textView;
     private int phoneNumLength;
     private CallBacks callbacks;
 
@@ -56,6 +58,7 @@ public class LoginFragment extends Fragment {
         View view = inflater.inflate(R.layout.login_page, container, false);
         editTextCountry = (AutoCompleteTextView) view.findViewById(R.id.autocomplete_country);
         editTextNumber = (EditText) view.findViewById(R.id.enter_phone);
+        textView= (TextView) view.findViewById(R.id.detail_login_page_header);
         editTextNumber.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -90,6 +93,7 @@ public class LoginFragment extends Fragment {
         String[] countries = getResources().getStringArray(R.array.countries_array);
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, countries);
         editTextCountry.setAdapter(arrayAdapter);
+
         return view;
     }
 

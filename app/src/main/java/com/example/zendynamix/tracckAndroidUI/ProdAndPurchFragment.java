@@ -35,6 +35,7 @@ public class ProdAndPurchFragment extends Fragment {
 
 
 
+
     static ProdAndPurchFragment newInstance(List<String> keyFeaturelist, List<String> techSpecKey, List<String> techSpecValue, String payMod,String totAmt,String ordDate) {
         Bundle args = new Bundle();
         args.putStringArrayList(LIST_KEY_FEATURE, (ArrayList<String>) keyFeaturelist);
@@ -53,14 +54,23 @@ public class ProdAndPurchFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+//        Bundle bundle = getActivity().getIntent().getExtras();
+//        if (bundle != null) {
+//            keyFeaturelist = (List<String>) bundle.getSerializable("KEY_FEATURE_LIST");
+//            techSpecKey=bundle.getStringArrayList("TEC_SPEC_KAY_LIST");
+//            techSpecValue=bundle.getStringArrayList("TEC_SPEC_VALUE_LIST");
+//            payMethod=bundle.getString("PAYMENT_METHOD");
+//            totalAmount=bundle.getString("TOTAL_AMT");
+//            orderDate=bundle.getString("ORDER_DATE");
 
-        this.keyFeaturelist = getArguments().getStringArrayList(LIST_KEY_FEATURE);
-        this.techSpecKey = getArguments().getStringArrayList(LIST_TECHSPEC_KEY);
-        this.techSpecValue = getArguments().getStringArrayList(LIST_TECHSPEC_VALUE);
-        this.payMethod=getArguments().getString(PAY_MODE);
-        this.totalAmount=getArguments().getString(TOTAL_AMT);
-        this.orderDate=getArguments().getString(ORDER_DATE);
-    }
+            this.keyFeaturelist = getArguments().getStringArrayList(LIST_KEY_FEATURE);
+            this.techSpecKey = getArguments().getStringArrayList(LIST_TECHSPEC_KEY);
+            this.techSpecValue = getArguments().getStringArrayList(LIST_TECHSPEC_VALUE);
+            this.payMethod = getArguments().getString(PAY_MODE);
+            this.totalAmount = getArguments().getString(TOTAL_AMT);
+            this.orderDate = getArguments().getString(ORDER_DATE);
+        }
+
 
     @Nullable
     @Override
@@ -70,8 +80,7 @@ public class ProdAndPurchFragment extends Fragment {
         viewPager = (ViewPager) view.findViewById(R.id.viewpager);
         setupViewPager(viewPager);
         tabLayout = (TabLayout) view.findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(viewPager);
-
+       tabLayout.setupWithViewPager(viewPager);
         return view;
     }
 

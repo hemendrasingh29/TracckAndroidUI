@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <android.support.v4.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -52,8 +53,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_gravity="center"
+                android:orientation="vertical"
                 android:padding="16dp">
 
                 <TextView
@@ -83,9 +84,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingTop="16dp"
-                    android:text="More Detail"
+                    android:text="@string/prod_detail"
                     android:textColor="@color/dark_green"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
+
 </android.support.v4.widget.NestedScrollView>

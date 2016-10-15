@@ -6,34 +6,36 @@ import java.util.List;
 
 /**
  * Created by zendynamix on 7/6/2016.
+ * test2
  */
 public class ItemData implements Serializable {
     private static final String LOG = "Login activity>>>>";
 
-    private String itemName;
+
+    private  String orderID;
+    private String retailerId;
     private String deliveryStatus;
-    private String itemImageUri;
-    private String retailer;
-    private String productId;
     private String productName;
-    private String orderId;
+    private String productId;
+    private String archive;
+    private String productImageUri;
     private String paymentMethod;
     private String totalAmount;
     private String orderDate;
 
+
+
+    private List<String> locationName=new ArrayList<>();
+    private List<String> eventTime=new ArrayList<>();
+    private List<String> orderActvity= new ArrayList<>();
+    private List<String> activityId= new ArrayList<>();
 
     private List<String> keyLFeature = new ArrayList<>();
     private List<String> imageUrls = new ArrayList<>();
     private List<String> keyL = new ArrayList<>();
     private List<String> valueL = new ArrayList<>();
 
-    public String getItemName() {
-        return itemName;
-    }
 
-    public void setItemName(String item) {
-        this.itemName = item;
-    }
 
     public String getDeliveryStatus() {
         return deliveryStatus;
@@ -43,24 +45,17 @@ public class ItemData implements Serializable {
         this.deliveryStatus = trackStatus;
     }
 
-    public String getRetailer() {
-        return retailer;
+    public String getRetailerId() {
+        return retailerId;
     }
 
-    public void setRetailer(String retailer) {
-        this.retailer = retailer;
+    public void setRetailerId(String retailer) {
+        this.retailerId = retailer;
     }
 
-    public String getItemImageUri() {
-        return itemImageUri;
-    }
-
-    public void setItemImageUri(String itemImageUri) {
-        this.itemImageUri = itemImageUri;
-    }
 
     public String getPhotoFilename() {
-        return "IMG_" + getItemName() + ".jpg";
+        return "IMG_" + getProductName() + ".jpg";
     }
 
     public String getProductId() {
@@ -100,14 +95,6 @@ public class ItemData implements Serializable {
         this.keyLFeature = keyLFeature;
     }
 
-    public String getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
-    }
-
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
@@ -136,6 +123,62 @@ public class ItemData implements Serializable {
 
     public String getPaymentMethod() {
         return paymentMethod;
+    }
+
+    public String getArchive() {
+        return archive;
+    }
+
+    public void setArchive(String archive) {
+        this.archive = archive;
+    }
+
+    public String getOrderID() {
+        return orderID;
+    }
+
+    public void setOrderID(String orderID) {
+        this.orderID = orderID;
+    }
+
+    public String getProductImageUri() {
+        return productImageUri;
+    }
+
+    public void setProductImageUri(String productImageUri) {
+        this.productImageUri = productImageUri;
+    }
+
+    public List<String> getEventTime() {
+        return eventTime;
+    }
+
+    public void addEventTime(List<String> eventTime) {
+        this.eventTime = eventTime;
+    }
+
+    public List<String> getActivityId() {
+        return activityId;
+    }
+
+    public void addActivityId(List<String> activityId) {
+        this.activityId = activityId;
+    }
+
+    public List<String> getLocationName() {
+        return locationName;
+    }
+
+    public void addLocationName(List<String> locationName) {
+        this.locationName = locationName;
+    }
+
+    public List<String> getOrderActvity() {
+        return orderActvity;
+    }
+
+    public void addOrderActvity(List<String> orderActvity) {
+        this.orderActvity = orderActvity;
     }
 }
 

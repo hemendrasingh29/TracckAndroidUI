@@ -14,6 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
+import com.example.zendynamix.tracckAndroidUI.sync.ItemSyncAdapter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,10 +41,11 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ItemSyncAdapter.initializeSyncAdapter(this);
         setContentView(getLayoutResId());
+
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
-       // setTitle(Html.fromHtml("<font color='#ff0000'>hello </font>"));
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment fragment = fragmentManager.findFragmentById(R.id.fragment_container);
@@ -73,7 +76,7 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
 
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-               // getSupportActionBar().setTitle("Navigation!");
+                // getSupportActionBar().setTitle("Navigation!");
                 invalidateOptionsMenu();
             }
             public void onDrawerClosed(View view) {
@@ -126,6 +129,7 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 
 }
 
